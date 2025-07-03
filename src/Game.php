@@ -5,7 +5,7 @@
  *
  * @author Nathan Berger
  * @created 2025-06-28
- * @last-modified 2025-06-28 by Nathan Berger
+ * @last-modified 2025-07-02 by Nathan Berger
  * @version 1.0.0
  * @license MIT
  * @requires PHP 8.4
@@ -42,7 +42,9 @@ class Game implements MessageComponentInterface
         $this->clients->attach( $conn );
         $this->gameState::addPlayer( $conn );
 
-        $conn->send( Lobby::render( count( $this->clients ) ) );
+        $engine = new Engine();
+
+        $engine->start();
     }
 
     public function onMessage( ConnectionInterface $from, $msg ) {
@@ -55,6 +57,7 @@ class Game implements MessageComponentInterface
 
     public function onClose( ConnectionInterface $conn ) {
         $this->clients->detach( $conn );
+        $this->gameState::removePlayer( $conn );
     }
 
     public function onError( ConnectionInterface $conn, \Exception $ex ) {
